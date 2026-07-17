@@ -120,7 +120,50 @@ python inference.py --checkpoint ./working/checkpoints/recursive_separator_v2.pt
 ```
 
 `inference.py` writes one `speaker_N.wav` per detected speaker to `--out_dir`.
+## Results
 
+Metrics from the original run of this pipeline (LibriSpeech `train-clean`,
+8000 training mixtures per SepFormer stage / 5000 for the recursive
+separator, settings as in `run_pipeline.sh`). Re-running with different
+data or hyperparameters will produce different numbers — treat these as a
+reference point, not a guarantee.
+
+**SepFormer baseline** (`finetune_pretrained.py` → `evaluate_pretrained.py`), fixed speaker count, 8kHz:
+
+| Model | Test mean SI-SDR | Best val SI-SDR (training) |
+|---|---|---|
+| SepFormer, finetuned, 2 speakers | 18.92 dB | 19.33 dB |
+| SepFormer, finetuned, 3 speakers | 13.79 dB | 13.84 dB |
+
+**RecursiveSeparator** (`train.py` → `evaluate.py`), variable speaker count (2–5), 16kHz, greedy SI-SDR matching against ground truth:
+
+| Speaker count | Mean SI-SDR | Separated streams (n) |
+|---|---|---|
+| 2 speakers | 4.93 dB | 141 |
+| 3 speakers | 0.63 dB | 196 |
+| 4 speakers | -1.87 dB | 265 |
+| 5 speakers | -3.50 dB | 337 |
+
+Mean absolute speaker-count error: **0.47** (average difference between the number of speakers the model detects via the stopping classifier and the true number in the mixture).
+
+**Reading these numbers:** the fixed-count SepFormer baseline (trained and
+evaluated only ever on exactly 2 or exactly 3 speakers) outperforms the
+recursive model on separation quality — expected, since it doesn't have to
+also solve "how many speakers are there." The recursive separator trades
+some SI-SDR for the ability to handle an unknown, variable number of
+speakers (2 to 5 in this run) with a single model and reasonably accurate
+speaker-count estimation. SI-SDR degrades and count error grows as more
+speakers overlap, which tracks with the general difficulty of the task.
+
+
+
+- The SepFormer baseline track uses **8kHz** audio (matches the pretrained
+  WSJ0-mix checkpoints); the WavLM/recursive track uses **16kHz** (matches
+  WavLM's pretraining). `mixing.py --sample_rate` controls this per dataset.
+- `train.py` is resumable: it checkpoints after every epoch and picks the
+  curriculum stage back up on restart.
+- This repo consolidates two Kaggle notebooks (an offline-asset-download
+  notebook and the training/eval notebook) into a single, runnable project.
 ## Notes
 
 - The SepFormer baseline track uses **8kHz** audio (matches the pretrained
