@@ -104,7 +104,7 @@ pip install -r requirements.txt --no-build-isolation
 To run the interactive web interface using Kaggle's free GPU accelerators, paste this block into a fresh Kaggle notebook cell (ensure **GPU T4 x2** or **P100** is activated in the settings panel):
 
 ```bash
-!git clone [https://github.com/18Vidit/speech-separator.git](https://github.com/18Vidit/speech-separator.git)
+!git clone https://github.com/18Vidit/speech-separator.git
 %cd speech-separator
 !pip install torch torchaudio numpy
 !pip install -r requirements.txt --no-build-isolation
