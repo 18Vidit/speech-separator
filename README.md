@@ -108,7 +108,7 @@ To run the interactive web interface using Kaggle's free GPU accelerators, paste
 %cd speech-separator
 !pip install torch torchaudio numpy
 !pip install -r requirements.txt --no-build-isolation
-!python app/app.py
+!PYTHONPATH=. python app/app.py
 ```
 
 ### 3. Launching the Interactive Web UI
