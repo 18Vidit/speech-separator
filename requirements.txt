@@ -1,0 +1,19 @@
+# PyTorch & Audio Processing
+torch>=2.0.0
+torchaudio>=2.0.0
+
+# Mamba Architecture & Dependencies
+mamba-ssm
+tilelang
+quack-kernels
+
+# Data Preparation & Utilities
+numpy
+soundfile
+
+# Frontend UI
+gradio
+
+# Visualization & Notebooks
+matplotlib
+ipython
