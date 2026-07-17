@@ -36,9 +36,22 @@ def process_audio(audio_path, max_spk):
         
     return extracted_files
 
-# Build the User Interface
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# 🗣️ Mamba-Dexformer Speech Separator")
+# Custom CSS to enforce pure black background and hide the entire footer
+custom_css = """
+/* Force the background to pure black */
+body, .gradio-container, .contain, .wrap { 
+    background-color: #000000 !important; 
+}
+
+/* Completely remove the footer, API links, and Gradio emojis */
+footer { 
+    display: none !important; 
+}
+"""
+
+# Build the User Interface using Monochrome theme and custom CSS
+with gr.Blocks(theme=gr.themes.Monochrome(), css=custom_css) as demo:
+    gr.Markdown("# Mamba-Dexformer Speech Separator")
     gr.Markdown("Upload a multi-speaker audio mixture. The deflationary Mamba model will iteratively extract individual speakers.")
     
     with gr.Row():
@@ -46,7 +59,9 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Column():
             audio_input = gr.Audio(type="filepath", label="Upload Mixture (WAV/MP3)")
             spk_slider = gr.Slider(minimum=1, maximum=5, step=1, value=5, label="Max Speakers to Extract")
-            submit_btn = gr.Button("Separate Audio", variant="primary")
+            
+            # Removed variant="primary" to prevent bright colors
+            submit_btn = gr.Button("Separate Audio")
             
         # Right Column: Outputs
         with gr.Column():
